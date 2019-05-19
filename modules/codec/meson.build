@@ -119,18 +119,6 @@ vlc_modules += {
     'sources' : files('uleaddvaudio.c')
 }
 
-# WMA fixed codec
-vlc_modules += {
-    'name' : 'wma_fixed',
-    'sources' : files(
-        'wmafixed/fft.c',
-        'wmafixed/mdct.c',
-        'wmafixed/wma.c',
-        'wmafixed/wmadeci.c',
-        'wmafixed/bitstream.c',
-        'wmafixed/wmafixed.c')
-}
-
 # Raw PCM demux module
 vlc_modules += {
     'name' : 'araw',
