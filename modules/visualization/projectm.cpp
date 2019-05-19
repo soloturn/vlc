@@ -81,8 +81,8 @@ static void Close        ( vlc_object_t * );
 # define FONT_PATH_MENU "C:\\WINDOWS\\Fonts\\arial.ttf"
 # define PRESET_PATH    NULL
 #else
-# define FONT_PATH      "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf"
-# define FONT_PATH_MENU "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono.ttf"
+# define FONT_PATH      "/usr/share/fonts/TTF/DejaVuSans.ttf"
+# define FONT_PATH_MENU "/usr/share/fonts/TTF/DejaVuSansMono.ttf"
 # define PRESET_PATH    "/usr/share/projectM/presets"
 #endif
 
