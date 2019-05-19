@@ -1,0 +1,314 @@
+#
+# VLC revision file generation
+#
+git_dir = join_paths(vlc_src_root, '.git')
+rev_target = vcs_tag(command : ['git',
+    '--git-dir', git_dir,
+    'describe', '--tags', '--long',
+    '--match', '?.*.*', '--always'],
+    input : 'revision.h.in',
+    output : 'revision.h')
+
+#
+# FourCC preprocessor
+#
+
+fourcc_gen = executable('fourcc_gen',
+    ['misc/fourcc_gen.c'],
+    include_directories: vlc_include_dirs,
+    install: false,
+    native: true,
+)
+
+fourcc = custom_target('fourcc_tables.h',
+                        output :  ['fourcc_tables.h'],
+                        depend_files : ['misc/fourcc_list.h', '../include/vlc_fourcc.h'],
+                        capture : true,
+                        command : [fourcc_gen])
+
+
+#
+# libvlccore dependencies
+#
+
+libvlccore_deps = [m_lib, dl_lib, threads_dep, libintl_lib]
+libvlccore_link_args = []
+
+anl_lib = cc.find_library('anl', required: false)
+
+libvlccore_deps += cc.find_library('iconv', required: false)
+libvlccore_deps += anl_lib
+
+if host_system == 'darwin'
+    libvlccore_deps += dependency('Foundation', required: true)
+    libvlccore_deps += dependency('CoreFoundation', required: true)
+    libvlccore_deps += dependency('CFNetwork', required: true)
+endif
+
+#
+# libvlccore library
+#
+
+libvlccore_sources_base = [
+    'libvlc.c',
+    'libvlc.h',
+    'libvlc-module.c',
+    'missing.c',
+    'version.c',
+    'config/configuration.h',
+    'config/core.c',
+    'config/chain.c',
+    'config/file.c',
+    'config/help.c',
+    'config/intf.c',
+    'config/cmdline.c',
+    'config/getopt.c',
+    'config/vlc_getopt.h',
+    'clock/input_clock.c',
+    'clock/input_clock.h',
+    'clock/clock_internal.c',
+    'extras/libc.c',
+    'modules/modules.h',
+    'modules/modules.c',
+    'modules/bank.c',
+    'modules/cache.c',
+    'modules/entry.c',
+    'modules/textdomain.c',
+    'network/stream.c',
+    'interface/dialog.c',
+    'interface/interface.c',
+    'playlist_legacy/playlist_internal.h',
+    'playlist_legacy/aout.c',
+    'playlist_legacy/thread.c',
+    'playlist_legacy/control.c',
+    'playlist_legacy/engine.c',
+    'playlist_legacy/sort.c',
+    'playlist_legacy/loadsave.c',
+    'playlist_legacy/tree.c',
+    'playlist_legacy/item.c',
+    'playlist_legacy/search.c',
+    'playlist_legacy/services_discovery.c',
+    'playlist_legacy/renderer.c',
+    'playlist/playlist.c',
+    'playlist/item.c',
+    'playlist/control.c',
+    'playlist/content.c',
+    'playlist/notify.c',
+    'playlist/player.c',
+    'playlist/preparse.c',
+    'playlist/randomizer.c',
+    'playlist/request.c',
+    'playlist/sort.c',
+    'media_source/media_source.c',
+    'media_source/media_tree.c',
+    'preparser/art.c',
+    'preparser/fetcher.c',
+    'preparser/preparser.c',
+    'input/item.c',
+    'input/access.c',
+    'input/control.c',
+    'input/decoder.c',
+    'input/demux.c',
+    'input/demux_chained.c',
+    'input/es_out.c',
+    'input/es_out_timeshift.c',
+    'input/input.c',
+    'input/info.h',
+    'input/meta.c',
+    'input/decoder.h',
+    'input/demux.h',
+    'input/es_out.h',
+    'input/es_out_timeshift.h',
+    'input/event.h',
+    'input/item.h',
+    'input/mrl_helpers.h',
+    'input/stream.h',
+    'input/thumbnailer.c',
+    'input/input_internal.h',
+    'input/input_interface.h',
+    'input/vlm_internal.h',
+    'input/vlm_event.h',
+    'input/resource.h',
+    'input/resource.c',
+    'input/services_discovery.c',
+    'input/stats.c',
+    'input/stream.c',
+    'input/stream_fifo.c',
+    'input/stream_extractor.c',
+    'input/stream_filter.c',
+    'input/stream_memory.c',
+    'input/subtitles.c',
+    'input/player.c',
+    'input/var.c',
+    'audio_output/aout_internal.h',
+    'audio_output/common.c',
+    'audio_output/dec.c',
+    'audio_output/filters.c',
+    'audio_output/output.c',
+    'audio_output/volume.c',
+    'video_output/chrono.h',
+    'video_output/control.c',
+    'video_output/control.h',
+    'video_output/display.c',
+    'video_output/display.h',
+    'video_output/inhibit.c',
+    'video_output/inhibit.h',
+    'video_output/interlacing.c',
+    'video_output/interlacing.h',
+    'video_output/snapshot.c',
+    'video_output/snapshot.h',
+    'video_output/statistic.h',
+    'video_output/video_output.c',
+    'video_output/video_text.c',
+    'video_output/video_epg.c',
+    'video_output/video_widgets.c',
+    'video_output/vout_subpictures.c',
+    'video_output/vout_spuregion_helper.h',
+    'video_output/window.c',
+    'video_output/window.h',
+    'video_output/opengl.c',
+    'video_output/vout_intf.c',
+    'video_output/vout_internal.h',
+    'video_output/vout_wrapper.c',
+    'network/getaddrinfo.c',
+    'network/http_auth.c',
+    'network/httpd.c',
+    'network/io.c',
+    'network/tcp.c',
+    'network/udp.c',
+    'network/rootbind.c',
+    'network/tls.c',
+    'text/charset.c',
+    'text/memstream.c',
+    'text/strings.c',
+    'text/unicode.c',
+    'text/url.c',
+    'text/filesystem.c',
+    'text/iso_lang.c',
+    'text/iso-639_def.h',
+    'misc/actions.c',
+    'misc/background_worker.c',
+    'misc/background_worker.h',
+    'misc/md5.c',
+    'misc/probe.c',
+    'misc/rand.c',
+    'misc/mtime.c',
+    'misc/block.c',
+    'misc/fifo.c',
+    'misc/fourcc.c',
+    'misc/fourcc_list.h',
+    'misc/es_format.c',
+    'misc/picture.c',
+    'misc/picture.h',
+    'misc/picture_fifo.c',
+    'misc/picture_pool.c',
+    'misc/interrupt.h',
+    'misc/interrupt.c',
+    'misc/keystore.c',
+    'misc/renderer_discovery.c',
+    'misc/threads.c',
+    'misc/cpu.c',
+    'misc/epg.c',
+    'misc/exit.c',
+    'misc/events.c',
+    'misc/image.c',
+    'misc/messages.c',
+    'misc/mime.c',
+    'misc/objects.c',
+    'misc/objres.c',
+    'misc/variables.h',
+    'misc/variables.c',
+    'misc/error.c',
+    'misc/xml.c',
+    'misc/addons.c',
+    'misc/filter.c',
+    'misc/filter_chain.c',
+    'misc/httpcookies.c',
+    'misc/fingerprinter.c',
+    'misc/text_style.c',
+    'misc/subpicture.c',
+    'misc/subpicture.h',
+    'misc/medialibrary.c'
+]
+
+libvlccore_sout_sources = [
+    'stream_output/sap.c',
+    'stream_output/sdp.c',
+    'stream_output/stream_output.c',
+    'stream_output/stream_output.h'
+]
+
+libvlccore_vlm_sources = [
+    'input/vlm.c',
+    'input/vlm_event.c',
+    'input/vlmshell.c'
+]
+
+libvlccore_sources = [
+    libvlccore_sources_base,
+    libvlccore_sout_sources,
+    libvlccore_vlm_sources
+]
+
+if host_system == 'darwin'
+    libvlccore_sources += [
+        'darwin/dirs.c',
+        'darwin/error.c',
+        'darwin/netconf.m',
+        'darwin/specific.c',
+        'darwin/thread.c',
+
+        'posix/filesystem.c',
+        'posix/plugin.c',
+        'posix/rand.c',
+        'posix/timer.c'
+    ]
+elif host_system == 'windows'
+    libvlccore_sources += [
+        'win32/dirs.c',
+        'win32/error.c',
+        'win32/filesystem.c',
+        'win32/netconf.c',
+        'win32/plugin.c',
+        'win32/rand.c',
+        'win32/specific.c',
+        'win32/thread.c',
+        'win32/winsock.c',
+
+        'win32/timer.c' # TODO: this is non-winstore
+    ]
+elif host_system == 'linux'
+    libvlccore_sources += [
+        'posix/dirs.c',
+        'posix/error.c',
+        'posix/netconf.c',
+        'posix/specific.c',
+        'posix/thread.c',
+        'posix/filesystem.c',
+        'posix/plugin.c',
+        'posix/rand.c',
+        'posix/timer.c',
+        'linux/cpu.c',
+        'linux/dirs.c',
+        'linux/filesystem.c',
+        'linux/thread.c',
+    ]
+
+    if anl_lib.found()
+        libvlccore_sources += 'linux/getaddrinfo.c'
+    else
+        libvlccore_sources += 'posix/getaddrinfo.c'
+    endif
+endif
+
+
+libvlccore = library(
+    'vlccore',
+    libvlccore_sources, vlc_about, fourcc, rev_target,
+    include_directories : vlc_include_dirs,
+    version : '9.0.0',
+    c_args : ['-DMODULE_STRING="core"', '-DHAVE_DYNAMIC_PLUGINS' ],
+    link_args : libvlccore_link_args,
+    link_with : [vlc_libcompat],
+    dependencies : libvlccore_deps
+)

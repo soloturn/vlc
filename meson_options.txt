@@ -1,0 +1,242 @@
+# General options
+
+option('optimize_memory',
+    type : 'boolean',
+    value : false,
+    description : 'Optimize memory usage over performance')
+
+option('binary_version',
+    type : 'string',
+    value : '',
+    description : 'To avoid plugins cache problem between binary version')
+
+option('stream_outputs',
+    type : 'boolean',
+    value : true,
+    description : 'Build the VLC stream output modules')
+
+option('videolan_manager',
+    type : 'boolean',
+    value : true,
+    description : 'Build the VideoLAN manager')
+
+option('addon_manager',
+    type : 'boolean',
+    value : true,
+    description : 'Build the VLC add-on manager modules')
+
+option('run_as_root',
+    type : 'boolean',
+    value : false,
+    description : 'Allow running VLC as root')
+
+
+# Font options
+
+option('default_font_path',
+    type : 'string',
+    value : '',
+    description : 'Path to the default font')
+
+option('default_monospace_font_path',
+    type : 'string',
+    value : '',
+    description : 'Path to the default monospace font')
+
+option('default_font_family',
+    type : 'string',
+    value : '',
+    description : 'Name of the default font family')
+
+option('default_monospace_font_family',
+    type : 'string',
+    value : '',
+    description : 'Name of the default monospace font family')
+
+
+# Dependency options
+
+option('alsa',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable ALSA support')
+
+option('pulse',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable Pulseaudio support')
+
+option('ogg',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libogg support')
+
+option('dca',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libdca support')
+
+option('mpg123',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libmpg123 support')
+
+option('mpeg2',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libmpeg2 support')
+
+option('schroedinger',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable schroedinger support')
+
+option('rsvg',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable librsvg support')
+
+option('cairo',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libcairo support')
+
+option('flac',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libflac support')
+
+option('opus',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libopus support')
+
+option('theoraenc',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable theoraenc support')
+
+option('theoradec',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable theoradec support')
+
+option('daaladec',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable daaladec support')
+
+option('daalaenc',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable daalaenc support')
+
+option('x265',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libx265 support')
+
+option('fdk-aac',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable fdk-aac support')
+
+option('shine',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable shine support')
+
+option('aom',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libaom support')
+
+option('twolame',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable twolame support')
+
+option('mfx',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libmfx support')
+
+option('spatialaudio',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libspatialaudio support')
+
+option('samplerate',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libsamplerate support')
+
+option('soxr',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable soxr support')
+
+option('speexdsp',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable speexdsp support')
+
+option('caca',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable caca support')
+
+option('drm',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable libdrm support')
+
+option('goom2',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable goom2 visualization plugin')
+
+option('avahi',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable zeroconf (avahi) services discovery plugin')
+
+option('mtp',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable MTP devices support')
+
+option('upnp',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable UPnP plugin (Intel SDK)')
+
+option('libxml2',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable XML support')
+
+option('medialibrary',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable medialibrary support')
+
+option('a52',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable a52 support')
+
+option('faad',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable faad support')
+
+option('fluidsynth',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable fluidsynth/fluidlite support')
+
+option('microdns',
+    type : 'feature',
+    value : 'auto',
+    description : 'Enable/disable microdns support')
